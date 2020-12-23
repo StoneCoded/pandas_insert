@@ -1,5 +1,5 @@
 import pandas as pd
-class chunk_insert():
+class chunk_manipulate():
     def __init__(self, df):
         self.df = df
 
@@ -7,11 +7,10 @@ class chunk_insert():
         """
         Creates a 'chunk' of rows from a dataframe
 
-        ARGS: df - Dataframe for rows to be inserted into
-        new_rows - Dataframe with same columns as original DataFrame
-        split_index - index where data will be inputted, default 0
+        ARGS: c_start - start index of desired section
+              c_end - end index of desired section (not inclusive)
 
-        returns: orignal DataFrame with inserted rows, index is reset.
+        returns: A section of rows between c_start and c_end
 
         """
 
@@ -20,6 +19,7 @@ class chunk_insert():
         else:
             self.df_chunk = self.df.iloc[(c_start):(c_end), :].copy()
         return self.df_chunk
+
     def row_insert(self, new_rows, split_index=0):
         """
             Inserts rows with indentical columns into a DataFrame
@@ -42,17 +42,18 @@ class chunk_insert():
             df_split_2]).reset_index(drop=True)
         return self.df
 
-    def multiply_row_chunks(self, c_start, c_end, split_index):
+    def multiply_rows(self, c_start, c_end, split_index):
+        """
+            Copies rows and pastes them back into its DataFrame at index
+
+            ARGS: c_start - start index of desired section
+                  c_end - end index of desired section (not inclusive)
+                  split_index - index where data will be pasted, default 0
+
+            returns: duplicates DataFrame rows, index is reset.
+        """
+
         self.df = (self.row_insert(new_chunk.chunk(c_start,c_end),\
                  split_index))
+
         return self.df
-
-
-
-
-lst = [[1,2,3],[2,3,4],[3,3,3],[5,6,7]]
-lst2 = [[9,9,9]]
-df = pd.DataFrame(lst, columns = ['a','b','c'])
-df_new = pd.DataFrame(lst2, columns = ['a','b','c'])
-
-new_chunk = chunk_insert(df)
